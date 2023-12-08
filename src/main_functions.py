@@ -16,6 +16,7 @@ factory.registerObject( KakuyomuNovel   )
 
 
 def archiveUpdate(dirList=[],keep_text_format=False):
+    # 找不到，建新的
     if not dirList:
         dirList=os.listdir('./novel_list')
     print("list=")
@@ -105,22 +106,53 @@ def archiveFullUpdate(dirList=[],force=False):
         novel.processNovel()
 
 
-
-def getInputFile() -> List[str]:
+def novel_url() -> list[list[str]]:
     """return code and novel name from input.txt"""
-    inputfile=open('input.txt','r+', encoding='utf-8')
-    line=inputfile.readline()
-    novel_list=[]
-    while line:
-        print("{}".format(line.strip()))
-        separator=line.find(';')
-        code=line[:separator]
-        novel_name=line[separator+1:] #delete carriage return
-        novel_name=novel_name.strip()
-        novel_list.append([code,novel_name])
-        line = inputfile.readline()
-    inputfile.close()
+    novel_list = []     # [編號, 標題], ...
+    novel_number = ''   # 編號
+    novel_title = ''    # 標題
+
+    with open('novel_list.txt', 'r', encoding='utf-8') as inputfile:
+        for line in inputfile:
+            # 移除空格並檢查是否為空行
+            line = line.strip()
+            if not line:
+                continue
+
+            parts = line.split(';')
+            
+            # 檢查是否網址格式
+            novel_url = parts[0].strip()  # 網址
+            # 檢查是否是網址
+            if re.match(r'https?://', novel_url):
+                # 使用正則表達式來取得編號
+                match = re.search(r'(?<=https:\/\/)novel18\.syosetu\.com\/(n[a-z0-9]+)|ncode\.syosetu\.com\/(n[a-z0-9]+)|kakuyomu\.jp\/works\/(\d+)', novel_url)
+                
+                # 檢查哪個分組匹配成功，然後提取匹配值
+                if match.group(1):
+                    novel_number = match.group(1)
+                elif match.group(2):
+                    novel_number = match.group(2)
+                elif match.group(3):
+                    novel_number = match.group(3)
+                else:
+                    print("網址格式不符:",novel_url)
+                    continue
+            else:
+                # 不是網址的話直接使用輸入值
+                print("非網址:",novel_url)
+                continue
+
+            # 標題
+            if len(parts) == 1:
+                novel_title = ""
+            else:
+                novel_title = parts[1].strip()  
+
+            novel_list.append([novel_number, novel_title])
+
     return novel_list
+
 
 
 def getNovelInfoFromFolderName(folderName) :
@@ -132,18 +164,17 @@ def getNovelInfoFromFolderName(folderName) :
 
 
 
-
 def download(keep_text_format=False):
     if('novel_list' not in os.listdir('.')):
         os.mkdir('novel_list')
-    novel_list=getInputFile()
+    novel_list=novel_url()
     for novel_info in novel_list:
         code=novel_info[0]
         if code=='':
             continue
         
         title=novel_info[1]
-        #print('i '+title)
+        # print('i '+title)
         
         print('Working on:', code, 'Title:', title, 'Keep Format:', keep_text_format)
         #novel=Novel(code,name,keep_text_format)

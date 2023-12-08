@@ -1,3 +1,5 @@
+# 常用指令： python archive_updater.py d
+
 # coding: utf-8
 
 import argparse

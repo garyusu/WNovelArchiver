@@ -534,7 +534,7 @@ class N18SyosetuNovel(Novel):
             print("the novel has most likely been terminated")
         else:
             # self.cleanText(resume)
-            string = 'novel title= ' + self.getNovelTitle(html) + '\n\n'
+            string = ' novel title= ' + self.getNovelTitle(html) + '\n\n'
             resume.insert(0, string)
             self.createFile(0, 'TOC', resume)
 
