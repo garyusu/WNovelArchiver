@@ -165,6 +165,7 @@ def getNovelInfoFromFolderName(folderName) :
 
 
 def download(keep_text_format=False):
+    # 輸出目錄
     if('novel_list' not in os.listdir('.')):
         os.mkdir('novel_list')
     novel_list=novel_url()

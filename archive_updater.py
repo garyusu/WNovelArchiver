@@ -12,6 +12,7 @@ sys.path.append('..\src')
 
 from src.main_functions import *
 
+import trace
 
 
 updateInput='u'
@@ -82,7 +83,7 @@ def check_env():
 
 def option_download(args):
     keep_text_format=args.md
-    if args.i:
+    if args.i:  # 若指令有 '-i'
         print(args.i)
         download_cli(args.i)
     else: 
@@ -115,7 +116,7 @@ def parser():
     #     default=argparse.SUPPRESS)
     subparsers = parser.add_subparsers()
     
-    
+    # 新增指令 'download'，別名'd' , 參數'-i', '-md'
     parser_download = subparsers.add_parser('download',aliases='d', help='download novels found in input.txt')
     parser_download.add_argument('-i', type=str, help='change data source to CLI (next arg should be a novel line code;name)')
     parser_download.add_argument('-md', action='store_true', help='change text format to html/md')

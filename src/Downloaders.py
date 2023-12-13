@@ -82,27 +82,30 @@ class FactoryTarget:
         raise("containsCode method isn't defined")
     
 class ObjectFactory:
+    """ 定義物件的屬性，以dict包裹，一個小說一個dict"""
     def __init__(self):
         self._creators = {}
 
     def registerObject(self, item:FactoryTarget):
-        key = item.getSiteId()
-        creator = item
+        key = item.getSiteId()  # 取種類，作為key
+        creator = item          # 取物件，作為value
         self._creators[key] = creator
 
     def create(self, key, *kwargs):
+        """ 取得對應的物件，並傳遞所有傳入的參數 (kwargs) """
         creator = self._creators.get(key)
         if not creator:
             raise ValueError(key)
-        return creator(*kwargs)
+        return creator(*kwargs) 
 
 
 """ Novels for the NovelFactory must implement the following static methods: 
 containsCode(code) that uses the code to see if the novel is at that site.
 getSiteId() that returns the string id or nickname for that web site. """
 class NovelFactory(ObjectFactory):
+    """ 提供功能：取得編號、物件 """
     def getSiteId(self, code):
-        for key, creator in self._creators.items():
+        for key, creator in self._creators.items(): # 取得每個dict內容
             if (creator.containsCode(code)):
                 return key
         return 0
