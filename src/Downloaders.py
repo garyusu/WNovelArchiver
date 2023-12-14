@@ -82,7 +82,7 @@ class FactoryTarget:
         raise("containsCode method isn't defined")
     
 class ObjectFactory:
-    """ 定義物件的屬性，以dict包裹，一個小說一個dict"""
+    """ 定義物件的屬性，以dict包裹"""
     def __init__(self):
         self._creators = {}
 
